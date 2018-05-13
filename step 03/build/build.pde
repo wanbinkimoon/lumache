@@ -15,7 +15,7 @@ Kinect kinect;
 // ================================================================
 
 void settings(){ 
-	size(stageW, stageH);
+	size(stageW, stageH, P3D);
 }
 
 // ================================================================
@@ -36,17 +36,21 @@ void draw() {
 	PImage img = kinect.getDepthImage();
 	image(img, 0, 0);
 
-	int skip = 20;
+	int skip = 10;
 	for (int x = 0; x < img.width; x += skip) {
 		for (int y = 0; y < img.height; y += skip) {
 			int index = x + y * img.width;
 			float b = brightness(img.pixels[index]);
-			
-			println(b);
-			float _r = map(b , 0, 255, 24, 2);
+			// float _r = map(b , 0, 255, skip, skip / 10);
+			float _r = skip;
+			float z = map(b, 0, 255, 400, -400);
 			noStroke();
-			fill(b);
-			ellipse(x + (skip / 2), y + 480 + (skip / 2), _r, _r);
+			fill(255 - b);
+			pushMatrix();
+				translate(x, y + 480, z);
+				rect(0, 0, _r, _r);
+			popMatrix();
+			
 		}
 	}
 
