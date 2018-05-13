@@ -57,7 +57,7 @@ public void setup() {
   for (int i = 0; i < depthLookUp.length; i++) {
     depthLookUp[i] = rawDepthToMeters(i);
   }
-	cam = new PeasyCam(this, 1800);
+	cam = new PeasyCam(this, 1000);
 }
 
 // ================================================================
@@ -73,18 +73,19 @@ public float rawDepthToMeters(int depthValue) {
 // ================================================================
 public void draw() {
 	background(bgC);
+	lights();
 
 	// PImage img = kinect.getDepthImage();
 	// image(img, 0, 0);
 
 	cam.rotateY(0.0025f);
-
 	renderPoints();
 }
 
 // ================================================================
 
 public void renderPoints(){
+  translate(-(width / 2), - (height / 2));
 	int[] depth = kinect.getRawDepth();
 	int skip = 10;
 	for (int x = 0; x < kinect.width; x += skip) {
@@ -97,10 +98,10 @@ public void renderPoints(){
 	    
 	    pushMatrix();
 		    // Scale up by 200
-		    translate(-(width / 2), - (height / 2));
 		    float factor = 200;
 		    translate(v.x * factor, v.y * factor , factor - v.z * factor);
-		    ellipse(x, y, 8, 8);
+		    translate(x, y);
+		    box(8, 8, 8);
 	    popMatrix();
 		}
 	}
@@ -111,7 +112,8 @@ public void renderPoints(){
 public void calculateColor(int depth){
 	colorMode(HSB);
 	float hue = map(rawDepthToMeters(depth), 0, 1000, 0, 360);
-	fill(hue * 100, 255, 255);
+	stroke(hue * 100, 255, 255);
+	noFill();
 }
 
 // ================================================================

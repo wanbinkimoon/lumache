@@ -1,5 +1,5 @@
 int stageW      = 640;
-int stageH      = 480 * 2;
+int stageH      = 640;
 color bgC       = #3F3F3F;
 String dataPATH = "../../data";
 
@@ -7,10 +7,12 @@ String dataPATH = "../../data";
 
 import org.openkinect.freenect.*;
 import org.openkinect.processing.*;
+import peasy.*;
 
 // ================================================================
 
 Kinect kinect;
+PeasyCam cam;
 
 // ================================================================
 
@@ -35,7 +37,7 @@ void setup() {
   for (int i = 0; i < depthLookUp.length; i++) {
     depthLookUp[i] = rawDepthToMeters(i);
   }
-
+	cam = new PeasyCam(this, 1800);
 }
 
 // ================================================================
@@ -51,8 +53,11 @@ float rawDepthToMeters(int depthValue) {
 // ================================================================
 void draw() {
 	background(bgC);
-	PImage img = kinect.getDepthImage();
-	image(img, 0, 0);
+
+	// PImage img = kinect.getDepthImage();
+	// image(img, 0, 0);
+
+	cam.rotateY(0.0025);
 
 	renderPoints();
 }
@@ -72,7 +77,7 @@ void renderPoints(){
 	    
 	    pushMatrix();
 		    // Scale up by 200
-		    translate(x, y + 480);
+		    translate(-(width / 2), - (height / 2));
 		    float factor = 200;
 		    translate(v.x * factor, v.y * factor , factor - v.z * factor);
 		    ellipse(x, y, 8, 8);
