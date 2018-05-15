@@ -91,7 +91,7 @@ void renderPoints(){
 
 void calculateColor(int depth){
 	colorMode(HSB);
-	float hue = map(rawDepthToMeters(depth), 0, 1000, 0, 360);
+	float hue = map(rawDepthToMeters(depth), 0, 2047, 0, 360);
 	stroke(hue * 100, 255, 255);
 	noFill();
 }
