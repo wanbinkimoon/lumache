@@ -49,16 +49,15 @@ float rawDepthToMeters(int depthValue) {
 
 void renderPoints(){
   translate(-(width / 2), - (height / 2));
-	
 	int[] depth = kinect.getRawDepth();
 	int skip = 10;
-
 	for (int x = 0; x < kinect.width; x += skip) {
 		for (int y = 0; y < kinect.height; y += skip) {
 			int index = x + y * kinect.width;
 			int d = depth[index];
 
 			PVector v = depthToWorld(x, y, d);
+			
 			objectRender(d, v, x, y);
 
 		}

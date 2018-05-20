@@ -48,7 +48,6 @@ public void setup() {
 public void draw() {
 	background(bgC);
 	lights();
-	backgroundUpdate();
 	audioDataUpdate();
 	updateAudio();
 	kinectRender(false);
@@ -125,32 +124,6 @@ public void audioDataUpdate(){
     // audioIndexStep = map(knob[7], 0, 100, 2.5, 100);
   }
 
-public void backgroundSettings(){
-
-}
-
-// ================================================================
-
-public void backgroundUpdate(){
-	pushMatrix();
-		translate(0, 0, -1200);		
-
-		for (int j = 0; j < (height * 2); ++j) {
-			beginShape();
-				for (int i = 0; i < (audioRange - 1); ++i) {
-					float step = i * ((width * 4) / audioRange);
-					colorMode(HSB);
-					stroke(j, 100, 100);
-					noFill();
-					strokeWeight(2);
-					vertex(step - (width * 2), (audioData[i] * 1000) - (j * 20), (audioData[i] * 100));
-				}
-			endShape();
-		}
-
- 	popMatrix();
-	
-}
 
 
 // ================================================================
@@ -225,16 +198,15 @@ public float rawDepthToMeters(int depthValue) {
 
 public void renderPoints(){
   translate(-(width / 2), - (height / 2));
-	
 	int[] depth = kinect.getRawDepth();
 	int skip = 10;
-
 	for (int x = 0; x < kinect.width; x += skip) {
 		for (int y = 0; y < kinect.height; y += skip) {
 			int index = x + y * kinect.width;
 			int d = depth[index];
 
 			PVector v = depthToWorld(x, y, d);
+			
 			objectRender(d, v, x, y);
 
 		}
@@ -322,7 +294,6 @@ public void midiMonitor(){
 }
 
 float size;
-float factor = 200;
 
 // ================================================================
 
@@ -336,26 +307,23 @@ public void objectRender(int d, PVector v, int x, int y){
 public void calculateColor(int depth){
 	colorMode(HSB);
 	float hue = map(rawDepthToMeters(depth), 0, 2047, 0, 255);
-  strokeWeight(0.5f);
 	stroke(hue * 100, 255, 255);
 	noFill();
 }
 
-public void calculateShape(PVector v, int x, int y){
+public void	calculateShape(PVector v, int x, int y){
   pushMatrix();
     // Scale up by 200
-
+    float factor = 200;
 
     if(v.z < 1) size = map(audioData[2], 0, 100, 48, -8);
-    if(v.z < 3) size = map(audioData[10], 0, 100, 2, 128);
+    if(v.z < 3) size = map(audioData[10], 0, 100, 2, 48);
 		if(v.z >= 3) size = map(audioData[3], 0, 100, 8, 48);
 
     translate(v.x * factor, v.y * factor , factor - v.z * factor);
     translate(x, y);
 
-    // box(size, size, size);
-    sphere(size);
-    sphereDetail(4);
+    box(size, size, size);
   popMatrix();
 }
   static public void main(String[] passedArgs) {

@@ -25,7 +25,6 @@ void setup() {
 void draw() {
 	background(bgC);
 	lights();
-	backgroundUpdate();
 	audioDataUpdate();
 	updateAudio();
 	kinectRender(false);
