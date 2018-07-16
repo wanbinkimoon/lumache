@@ -7,15 +7,16 @@ String dataPATH = "../../data";
 // ================================================================
 
 void settings(){ 
-	size(stageW, stageH);
-	// fullScreen(P3D);
+	// size(stageW, stageH);
+	fullScreen();
 }
 
 // ================================================================
 
 void setup() {
 	surface.setResizable(true);
-
+	
+	midiSetup();
 	background(bgC);
 	kinectSettings(false);
 	// camSettings();

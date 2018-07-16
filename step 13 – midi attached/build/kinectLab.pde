@@ -49,7 +49,7 @@ float rawDepthToMeters(int depthValue) {
 
 void renderPoints(){
 	int[] depth = kinect.getRawDepth();
-	int skip = 10;
+	int skip = (int)map(knob[0], 0, 100, 10, 30);
 	for (int x = 0; x < kinect.width; x += skip) {
 		for (int y = 0; y < kinect.height; y += skip) {
 			int index = x + y * kinect.width;

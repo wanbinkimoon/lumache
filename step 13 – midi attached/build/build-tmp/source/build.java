@@ -38,7 +38,8 @@ public void settings(){
 
 public void setup() {
 	surface.setResizable(true);
-
+	
+	midiSetup();
 	background(bgC);
 	kinectSettings(false);
 	// camSettings();
@@ -101,10 +102,10 @@ FFT audioFFT;
 int audioRange  = 12;
 int audioMax = 100;
 
-float audioAmp = 91.0f;
-float audioIndex = 0.005f;
+float audioAmp = 523.0f;
+float audioIndex = 0.037f;
 float audioIndexAmp = audioIndex;
-float audioIndexStep = 0.309f;
+float audioIndexStep = 0.376f;
 
 float[] audioData = new float[audioRange];
 
@@ -231,7 +232,7 @@ public float rawDepthToMeters(int depthValue) {
 
 public void renderPoints(){
 	int[] depth = kinect.getRawDepth();
-	int skip = 10;
+	int skip = (int)map(knob[0], 0, 100, 10, 30);
 	for (int x = 0; x < kinect.width; x += skip) {
 		for (int y = 0; y < kinect.height; y += skip) {
 			int index = x + y * kinect.width;
@@ -315,6 +316,8 @@ public void midiUpdate(int channel, int number, int value){
 	if(number == 46) knob[13] = (int)map(value, 0, 127, 0, 100);
 	if(number == 47) knob[14] = (int)map(value, 0, 127, 0, 100);
 	if(number == 48) knob[15] = (int)map(value, 0, 127, 0, 100);
+
+	// midiMonitor();
 }
 
 public void midiMonitor(){
@@ -346,12 +349,12 @@ public void calculateColor(int depth){
 }
 
 public void calculateShape(PVector v, int x, int y, int index, int grid, int depth){
-  float padding = grid / 20;
   float selector = map(rawDepthToMeters(depth), 0, 2047, 0, 100);
 
 	size = 0;
-  if(selector <  1) size = map(audioData[10], 0, 100, grid / 2, grid - padding);
-  if(selector < .5f) size = map(audioData[2], 0, 100,  grid / 2, grid - padding);
+  if(selector <  1) size = map(audioData[11], 0, 100, grid / 2, grid * knob[8]);
+  if(selector < .5f) size = map(audioData[5], 0, 100,  grid / 2, grid * knob[8]);
+  if(selector >= .5f) size = map(audioData[3], 0, 100,  grid / 2, grid * knob[8]);
 
   float elliX = v.x * factor;
   float elliY = v.y * factor;

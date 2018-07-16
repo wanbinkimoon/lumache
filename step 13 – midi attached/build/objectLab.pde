@@ -23,13 +23,12 @@ void calculateColor(int depth){
 }
 
 void calculateShape(PVector v, int x, int y, int index, int grid, int depth){
-  float padding = grid / 20;
   float selector = map(rawDepthToMeters(depth), 0, 2047, 0, 100);
 
 	size = 0;
-  if(selector <  1) size = map(audioData[10], 0, 100, grid / 2, grid - padding);
-  if(selector < .5) size = map(audioData[2], 0, 100,  grid / 2, grid - padding);
-  if(selector >= .5) size = map(audioData[3], 0, 100,  grid / 2, grid - padding);
+  if(selector <  1) size = map(audioData[11], 0, 100, grid / 2, grid * knob[8]);
+  if(selector < .5) size = map(audioData[5], 0, 100,  grid / 2, grid * knob[8]);
+  if(selector >= .5) size = map(audioData[3], 0, 100,  grid / 2, grid * knob[8]);
 
   float elliX = v.x * factor;
   float elliY = v.y * factor;

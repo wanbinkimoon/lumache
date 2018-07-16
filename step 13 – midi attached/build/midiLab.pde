@@ -53,6 +53,8 @@ void midiUpdate(int channel, int number, int value){
 	if(number == 46) knob[13] = (int)map(value, 0, 127, 0, 100);
 	if(number == 47) knob[14] = (int)map(value, 0, 127, 0, 100);
 	if(number == 48) knob[15] = (int)map(value, 0, 127, 0, 100);
+
+	// midiMonitor();
 }
 
 void midiMonitor(){
