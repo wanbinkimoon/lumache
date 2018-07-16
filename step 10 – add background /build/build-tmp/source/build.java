@@ -23,69 +23,36 @@ public class build extends PApplet {
 
 int stageW      = 1200;
 int stageH      = 800;
-int bgC       = 0xff393E46;
+int bgC       = 0xff3F3F3F;
 String dataPATH = "../../data";
 
 
 // ================================================================
 
 public void settings(){ 
-	size(stageW, stageH);
+	size(stageW, stageH, P3D);
 	// fullScreen(P3D);
 }
 
 // ================================================================
 
 public void setup() {
-	surface.setResizable(true);
-
 	background(bgC);
 	kinectSettings(false);
-	// camSettings();
+	camSettings();
 	audioSettings();
 }
 
 // ================================================================
 
 public void draw() {
-	surface.setTitle("\ud83d\udc0c \u2013 Lumache \u2013 FPS: " + nf(frameRate, 0, 2));
-
 	background(bgC);
-	// lights();
+	lights();
 	audioDataUpdate();
 	updateAudio();
 	kinectRender(false);
 }
 
-// ================================================================
-
-public void keyPressed(){	
-	switch (key) {
-		case 'q':
-			exit();
-			break;
-		case 'p':
-			screenShot();
-			break;
-	}
-}
-
-// ================================================================
-
-boolean letsRender = false;
-int     renderNum  = 0;
-String  renderPATH = "../render/";
-
-// ================================================================
-
-public void screenShot(){
-	letsRender = true;
-	if (letsRender) {
-		letsRender = false;
-		save(renderPATH + renderNum + ".png");
-		renderNum++;
-	}
-}
 
 
 
@@ -230,14 +197,18 @@ public float rawDepthToMeters(int depthValue) {
 // ================================================================
 
 public void renderPoints(){
+  translate(-(width / 2), - (height / 2));
 	int[] depth = kinect.getRawDepth();
 	int skip = 10;
 	for (int x = 0; x < kinect.width; x += skip) {
 		for (int y = 0; y < kinect.height; y += skip) {
 			int index = x + y * kinect.width;
 			int d = depth[index];
+
 			PVector v = depthToWorld(x, y, d);
-			objectRender(d, v, x, y, index, skip);
+			
+			objectRender(d, v, x, y);
+
 		}
 	}
 }
@@ -323,45 +294,37 @@ public void midiMonitor(){
 }
 
 float size;
-float factor = 2000;
 
 // ================================================================
 
-// called in kinect lab
-public void objectRender(int d, PVector v, int x, int y, int index, int grid){
+public void objectRender(int d, PVector v, int x, int y){
 	calculateColor(d);
-	calculateShape(v, x, y, index, grid, d);
+	calculateShape(v, x, y);
 }
 
 // ================================================================
 
 public void calculateColor(int depth){
-  float selector = map(rawDepthToMeters(depth), 0, 2047, 0, 100);
-  int fillC = 0xffF96D00;
-  if(selector < 2) fillC = 0xff5C636E;
-  if(selector < .05f) fillC = 0xffF96D00;
-  if(selector < .035f) fillC = 0xffFA872E;
-  // if(v.z >= 3) // default color
-	noStroke(); fill(fillC); 
+	colorMode(HSB);
+	float hue = map(rawDepthToMeters(depth), 0, 2047, 0, 255);
+	stroke(hue * 100, 255, 255);
+	noFill();
 }
 
-public void calculateShape(PVector v, int x, int y, int index, int grid, int depth){
-  float padding = grid / 20;
-  float selector = map(rawDepthToMeters(depth), 0, 2047, 0, 100);
+public void	calculateShape(PVector v, int x, int y){
+  pushMatrix();
+    // Scale up by 200
+    float factor = 200;
 
-	size = 0;
-  if(selector <  1) size = map(audioData[10], 0, 100, grid / 2, grid - padding);
-  if(selector < .5f) size = map(audioData[2], 0, 100,  grid / 2, grid - padding);
+    if(v.z < 1) size = map(audioData[2], 0, 100, 48, -8);
+    if(v.z < 3) size = map(audioData[10], 0, 100, 2, 48);
+		if(v.z >= 3) size = map(audioData[3], 0, 100, 8, 48);
 
-  float elliX = v.x * factor;
-  float elliY = v.y * factor;
+    translate(v.x * factor, v.y * factor , factor - v.z * factor);
+    translate(x, y);
 
-  // float posX = map(elliX, -342.85672, 283.62805, grid, width - grid); // theese are magic numbers
-  // float posY = map(elliY, -246.59514, 220.71214, grid, height - grid); // theese are magic numbers
-  float posX = map(elliX, -500, 500, grid, width - grid); // theese are magic numbers
-  float posY = map(elliY, -400, 400, grid, height - grid); // theese are magic numbers
-  
-  if(posX != width / 2) ellipse(posX, posY, size, size);
+    box(size, size, size);
+  popMatrix();
 }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "build" };
