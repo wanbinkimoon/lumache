@@ -22,9 +22,10 @@ void calculateColor(int depth){
 }
 
 void calculateShape(PVector v, int x, int y, int index, int grid){
-  if(v.z < 1) size = map(audioData[2], 0, 100, 48, -8);
-  if(v.z < 3) size = map(audioData[10], 0, 100, 2, 128);
-	if(v.z >= 3) size = map(audioData[3], 0, 100, 8, 48);
+  float padding = grid / 16;
+  if(v.z < 1) size = map(audioData[2], 0, 100,  padding, grid - padding);
+  if(v.z < 3) size = map(audioData[10], 0, 100, padding, grid - padding);
+	if(v.z >= 3) size = map(audioData[3], 0, 100, padding, grid - padding);
 
   float elliX = v.x * factor;
   float elliY = v.y * factor;
